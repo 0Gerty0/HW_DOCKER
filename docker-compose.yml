@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: testdb
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    image: openjdk:8-jre-alpine
+    depends_on:
+      - db
+    volumes:
+      - ./db-api.jar:/db-api.jar
+      - ./application.properties:/application.properties
+    command: ["java", "-jar", "/db-api.jar"]
+    ports:
+      - "9999:9999"
+
+volumes:
+  db_data:
